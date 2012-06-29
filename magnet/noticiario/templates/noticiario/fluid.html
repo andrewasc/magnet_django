@@ -34,7 +34,6 @@
   </head>
 
   <body>
-
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -65,7 +64,6 @@
         </div>
       </div>
     </div>
-
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
@@ -73,12 +71,16 @@
             <ul class="nav nav-list">
               <li class="nav-header">Canais</li>
               {% for secao in secoes %}
-              <li><a href="{% url capa-secao secao=secao %}">{{secao}}</a></li>
+                {% if secao == secao_atual %}
+                    <li class="active"><a href="{% url capa-secao secao=secao %}">{{secao}}</a><a href="{% url lista-secao secao=secao %}">(ver todas)</a></li>
+                {% else %}
+                    <li><a href="{% url capa-secao secao=secao %}">{{secao}}</a></li>
+                {% endif %}
               {% endfor secao in secoes %}
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
               <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
@@ -89,7 +91,6 @@
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
-              
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

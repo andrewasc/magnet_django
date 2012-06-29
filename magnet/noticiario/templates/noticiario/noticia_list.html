@@ -1,0 +1,23 @@
+{% extends "noticiario/fluid.html" %}
+<style type="text/css">
+    dd{margin-bottom:20px;}
+</style>
+{% block conteudo %}
+<h1>Últimas notícias</h1>
+<dl>
+    {% for noticia in object_list %}
+        <dt>{{noticia.secao|upper}}:{{noticia.titulo}}</dt>
+        <dd>{{noticia.lead}}</dd>
+        {% if forloop.last %}
+            <a class="btn"  href="{% url lista-secao secao=noticia.secao %}?page=1">Primeira página</a>
+            {% if page_obj.has_previous %}
+                <a class="btn" href="{% url lista-secao secao=noticia.secao %}?page={{page_obj.previous_page_number}}">&lt;&lt;&lt;</a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a class="btn"  href="{% url lista-secao secao=noticia.secao %}?page={{page_obj.next_page_number}}">&gt;&gt;&gt;</a>
+            {% endif %}
+            <a class="btn" href="{% url lista-secao secao=noticia.secao %}?page={{page_obj.paginator.num_pages}}">Última página</a>
+        {% endif %}
+    {% endfor %}
+</dl>
+{% endblock conteudo %}
