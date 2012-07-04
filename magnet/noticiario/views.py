@@ -1,6 +1,10 @@
 from django.views.generic import TemplateView, ListView
 
+from django.views.generic.edit import FormView, CreateView
+
 from .models import Noticia
+from .forms import FormContato
+from .forms import FormNoticia
 
 class HomeView(TemplateView):
     template_name = 'noticiario/fluid.html'
@@ -23,3 +27,23 @@ class ListaSecaoView(ListView):
     paginate_by = 15
     def get_queryset(self):
         return Noticia.objects.filter(secao=self.kwargs['secao'])
+
+
+class ContatoView(FormView):
+    template_name = 'noticiario/contato.html'
+    form_class = FormContato
+    success_url = '/grato/'
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        form.send_email()
+        return super(ContatoView, self).form_valid(form)
+
+class CriarNoticiaView(CreateView):
+    model=Noticia
+
+#class ContribuirView(FormView):
+    #template_name = 'noticiario/contribuir.html'
+    #form_class = FormNoticia
+    #success_url = '/grato/'
