@@ -24,7 +24,7 @@ class Noticia(models.Model):
     publicado = models.BooleanField(db_index=True)
     dt_criacao = models.DateTimeField(u'data de criação',
         default=datetime.datetime.now, db_index=True)
-    dt_atualizacao = models.DateTimeField(u'seção', editable=False, db_index=True)
+    dt_atualizacao = models.DateTimeField(editable=False, db_index=True)
     destaque = models.IntegerField(choices=NIVEIS_DESTAQUE, default=NIVEIS_DESTAQUE[0][0], db_index=True)
 
     class Meta:
@@ -57,8 +57,19 @@ class Noticia(models.Model):
         cursor = connection.cursor()
 
         secoes = cursor.execute("SELECT DISTINCT secao FROM noticiario_noticia")
-        secoes = (t[0] for t in secoes)
+        secoes = sorted(t[0] for t in secoes if t[0]) #filtrar seção em branco
 
         return secoes
+class Link(models.Model):
+    titulo = models.CharField(u'título', max_length=256)
+    url = models.URLField()
+    dt_criacao = models.DateTimeField(u'data de criação',
+        default=datetime.datetime.now, db_index=True)
+    dt_verificacao = models.DateTimeField(u'data de verificação', db_index=True, null=True, blank=True)
+    situacao = models.CharField(u'situação', max_length=128, blank=True)
+    ativo = models.BooleanField(default=True)
+    noticia = models.ForeignKey(Noticia)
 
+    def __unicode__(self):
+        return self.titulo
 
