@@ -3,8 +3,7 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import FormView, CreateView
 
 from .models import Noticia
-from .forms import FormContato
-from .forms import FormNoticia
+from .forms import FormContato, FormNoticia, FormContribNoticia
 
 class HomeView(TemplateView):
     template_name = 'noticiario/fluid.html'
@@ -42,6 +41,7 @@ class ContatoView(FormView):
 
 class CriarNoticiaView(CreateView):
     model=Noticia
+    form_class = FormContribNoticia
 
 #class ContribuirView(FormView):
     #template_name = 'noticiario/contribuir.html'
