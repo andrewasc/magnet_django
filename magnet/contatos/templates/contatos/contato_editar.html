@@ -21,16 +21,3 @@
     </div>
 </form>
 {% endblock conteudo %}
-
-    {% block js-rodape %}
-    <script>
-        $(document).ready(function(){
-            $("#ad-fone").click(
-                function(event){
-                    var form_fone = $(".form_fone:first").clone();
-                    $("#id_form-0-ddd:last").attr("id", "xxx");
-                    $(form_fone).appendTo("#forms_fones");
-                });
-            });
-    </script>
-    {% endblock %}

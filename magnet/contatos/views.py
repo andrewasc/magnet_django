@@ -1,11 +1,12 @@
 # coding: utf-8
 
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.forms.formsets import formset_factory
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, modelformset_factory
 
 from .forms import ContatoSimples, FoneForm, ContatoModelForm, FoneModelForm
 from .models import Contato, Fone
+from django.core.urlresolvers import reverse
 
 def contato_simples(request):
     if request.method == 'POST': # se o form foi submetido pelo usuário
@@ -67,7 +68,7 @@ def contato_simples_com_modelform(request):
 
 
 def contato_fones_com_modelform(request):
-    FonesFormSet = inlineformset_factory(Contato, Fone)
+    FonesFormSet = inlineformset_factory(Contato, Fone, extra=1)
     if request.method == 'POST': # se o form foi submetido pelo usuário
         #criamos um form associado aos dados da requisição POST
         form_contato = ContatoModelForm(request.POST)
@@ -85,3 +86,27 @@ def contato_fones_com_modelform(request):
     return render(request, 'contatos/contato_fones.html', {'form_contato': form_contato, 'forms_fones': forms_fones
     })
 
+
+def lista_contatos(request):
+    contatos = Contato.objects.all()
+    return render(request, 'contatos/listagem.html', {'contatos':contatos})
+
+
+def editar_contato(request, id_contato):
+    # contato = Contato.objects.get(pk=id_contato)
+    contato = get_object_or_404(Contato, pk=id_contato)
+    FonesFormSet = inlineformset_factory(Contato, Fone)
+    if request.method == "POST":
+        form_contato = ContatoModelForm(request.POST, instance=contato)
+        forms_fones = FonesFormSet(request.POST, instance=contato)
+        formset = FonesFormSet(request.POST, instance=contato)
+        if form_contato.is_valid():
+            form_contato.save()
+        if forms_fones.is_valid():
+            forms_fones.save()
+            # Do something. Should generally end with a redirect. For example:
+            return HttpResponseRedirect(reverse('lista-contatos'))
+    else:
+        form_contato = ContatoModelForm(instance=contato)
+        forms_fones = FonesFormSet(instance=contato)
+    return render(request, 'contatos/contato_editar.html', {'form_contato':form_contato, 'forms_fones':forms_fones})
